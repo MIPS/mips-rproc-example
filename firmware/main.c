@@ -38,6 +38,15 @@
 
 #define POLLED_MODE 0
 
+/*
+ * If your kernel is configured to use coherent DMA, set this to 1.
+ * If the kernel is using coherent DMA, it will access shared buffers cached,
+ * and the firmware must do the same to see consistent data.
+ * If the kernel is configured for non-coherent DMA, it will access shared buffers
+ * uncached, so the firmware must do the same to see consistent data.
+ */
+#define DMA_COHERENT 0
+
 #include <asm/remoteproc.h>
 #include <printf.h>
 #include <stddef.h>
@@ -235,7 +244,7 @@ void gic_irq_to_host(void)
 void handle_buffer(void *buffer, int len)
 {
 	uint8_t *out_buf;
-	uint8_t *in_buf = phys_to_virt(buffer, 1);
+	uint8_t *in_buf = phys_to_virt(buffer, DMA_COHERENT);
 	int out_len;
 	int i;
 
@@ -243,7 +252,7 @@ void handle_buffer(void *buffer, int len)
 	if (!vring_get_buffer(&vring_outgoing, &buffer, &out_len))
 		return;
 	printf("Got outgoing buffer length %d at 0x%08x\n", out_len, buffer);
-	out_buf = phys_to_virt(buffer, 1);
+	out_buf = phys_to_virt(buffer, DMA_COHERENT);
 
 	printf("Incoming %d bytes at 0x%08x\n", len, (int)in_buf);
 	for (i = 0; (i < len) && (i < out_len); i++) {
