@@ -204,6 +204,8 @@ void configure_interrupts(int irq_from_host, int irq_to_host)
 
 		/* Write to the GIC set mask register to enable interrupt */
 		*gic_set_mask_reg = 1 << gic_set_mask_bit;
+		__asm__("sync");
+		__asm__("ehb");
 	}
 
 	/* Enable interrupts! */
@@ -211,6 +213,7 @@ void configure_interrupts(int irq_from_host, int irq_to_host)
 	flags |= 1 << 10; /* IM2 */
 	flags |= 1; /* IE */
 	__asm__("mtc0 %0, $12, 0" : : "r" (flags));
+	__asm__("ehb");
 #endif /* POLLED_MODE */
 }
 
