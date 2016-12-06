@@ -1,24 +1,15 @@
 
-TARGET_FW = rproc-example-firmware
+SUBDIRS = case_invert
 
-all: $(TARGET_FW)
+clean_SUBDIRS=$(addprefix clean_,$(SUBDIRS))
 
-s_objs += head.o
-c_objs += main.o printf.o trace.o vring.o
+all: $(SUBDIRS)
+clean: $(clean_SUBDIRS)
 
-includes += -Iinclude
+.PHONY: force
 
-cflags += -g -nostdlib -fno-exceptions -fno-builtin -nostartfiles -nodefaultlibs -fno-stack-protector
-cflags += -O2
+$(SUBDIRS): force
+	make -C $@
+$(clean_SUBDIRS): force
+	make -C $(patsubst clean_%,%,$@) clean
 
-$(s_objs): %.o: %.S
-	$(CROSS_COMPILE)gcc $(includes) $(cflags) $(arch_flags) -c -o $@ $<
-
-$(c_objs): %.o: %.c
-	$(CROSS_COMPILE)gcc $(includes) $(cflags) $(arch_flags) -c -o $@ $<
-
-$(TARGET_FW): $(s_objs) $(c_objs)
-	$(CROSS_COMPILE)ld -T $(TARGET_FW).ld $(arch_flags) -o $@ $^
-
-clean:
-	rm -f *.o $(TARGET_FW)

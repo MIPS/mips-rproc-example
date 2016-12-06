@@ -1,12 +1,15 @@
 
-TARGET = rproc-example-host
+SUBDIRS = case_invert
 
-all: $(TARGET)
+clean_SUBDIRS=$(addprefix clean_,$(SUBDIRS))
 
-cflags += -O2
+all: $(SUBDIRS)
+clean: $(clean_SUBDIRS)
 
-$(TARGET): $(TARGET).c
-	$(CROSS_COMPILE)gcc $(cflags) $(arch_flags) -o $@ $^
+.PHONY: force
 
-clean:
-	rm -f *.o $(TARGET)
+$(SUBDIRS): force
+	make -C $@
+$(clean_SUBDIRS): force
+	make -C $(patsubst clean_%,%,$@) clean
+
