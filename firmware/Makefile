@@ -1,5 +1,5 @@
 
-SUBDIRS = case_invert
+SUBDIRS = case_invert ws2812
 
 clean_SUBDIRS=$(addprefix clean_,$(SUBDIRS))
 
