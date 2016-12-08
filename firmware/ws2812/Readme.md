@@ -57,6 +57,6 @@ remoteproc remoteproc0: registered virtio0 (type 11)
 remoteproc remoteproc0: remote processor mips-cpu3 is now up
 remoteproc remoteproc0: mips-cpu3 booting firmware rproc-mips-cpu3-fw
 ```
-The firmware is now running on CPU3, and the WS2812 LED string should light up.
+The firmware is now running on CPU3, and the WS2812 LED string should light up: https://github.com/MIPS/mips-rproc-example/blob/master/img/VID_20161208_165816.mp4
 9. ...
 10. Profit
