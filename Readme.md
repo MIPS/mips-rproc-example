@@ -33,13 +33,32 @@ The system must also be designed to ensure that there are no resource conflicts 
 ## Control interface - sysfs
 The MIPS remote processor interface is designed to allow dynamic management of the system resources. CPUs can be hotplugged from Linux and reassigned to firmware, then stopped and brought back online in Linux once the task is complete.
 First a CPU must be made available by hotplugging it from Linux, via the "online" sysfs interface, e.g.
-`# echo 0 > /sys/devices/system/cpu/cpu1/online`
-Once the CPU has been removed from Linux control, the MIPS remote processor driver takes hold of it and creates a sysfs interface for it:
 ```
-# ls /sys/class/mips-rproc/rproc1/
-firmware     remoteproc0  stop         subsystem    uevent
+# echo 0 > /sys/devices/system/cpu/cpu1/online
 ```
-The firmware file can be written with the name of a firmware file, which should be located in /lib/firmware. When this sysfs file is written, the firmware will be loaded and appropriate virtio devices created for it as described by the firmware image. The CPU will then begin executing the firmware.
+The CPU is then marked as available to the MIPS remote processor driver:
+```
+# echo 1 > /sys/devices/mips-rproc/cpus
+```
+The state of the remote CPU can then be modified via the remoteproc sysfs interface.
+
+Once the CPU has been removed from Linux control and made available to the MIPS remote processor driver, the remoteproc subsystem acquires it and attempts to start a firmware image on the CPU. The default firmware name is rproc-mips-cpu<i>-fw where <i> is the Linux CPU number, which should be located in /lib/firmware. The driver also creates a sysfs interface:
+```
+# ls /sys/class/remoteproc/remoteproc1
+device   firmware   power   state   subsystem    uevent   virtio0
+```
+The firmware loaded to the CPU may be changed dynamically by stopping the CPU:
+```
+# echo stop > /sys/class/remoteproc/remoteproc1/state
+```
+Writing a new firmware name to the firmware file:
+```
+# echo test-fw > /sys/class/remoteproc/remoteproc1/state
+```
+And then starting the CPU:
+```
+# echo start > /sys/class/remoteproc/remoteproc1/state
+```
 
 ## Communication via virtio devices
 The remote processor framework supports the creation of virtio devices for communication with firmware running on the remote CPU. These are the same types of devices that are used by virtualisation software to create pseudo devices implemented in software. For example, a firmware may provide a virtual serial port, virtual ethernet adaptor, etc which is implemented by the firmware and which will be instantiated as a device on the Linux side. In the case of a virtual serial port, a device node such as /dev/vport0p0 is created to represent the virtual device implemented in firmware.
