@@ -13,7 +13,7 @@ vpath %.c $(COMMON)
 
 includes += -I$(COMMON)/include
 
-cflags += -g -nostdlib -fno-exceptions -fno-builtin -nostartfiles -nodefaultlibs -fno-stack-protector
+cflags += -g -nostdlib -fno-exceptions -fno-builtin -nostartfiles -nodefaultlibs -fno-stack-protector -mno-abicalls
 cflags += -O2
 
 $(s_objs): %.o: %.S
