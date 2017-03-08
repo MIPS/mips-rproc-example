@@ -440,9 +440,11 @@ static void ws2812_drive(void)
                u8 g = rgb_data[led+1];
                u8 b = rgb_data[led+2];
 
-               ws2812_drive_led(g);
+	       ws2812_drive_led(b);
+	       ws2812_drive_led(g);
                ws2812_drive_led(r);
-               ws2812_drive_led(b);
+
+
        }
 #endif
 
