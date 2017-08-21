@@ -1,0 +1,42 @@
+From 7e88e57b6e89dcf49d163b75b656ce25abe15157 Mon Sep 17 00:00:00 2001
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Date: Wed, 20 Apr 2016 10:25:53 +0100
+Subject: [PATCH 4/4] MIPS: Deprecate VPE Loader
+
+The MIPS remote processor driver (CONFIG_MIPS_REMOTEPROC) provides a
+more standard mechanism for using one or more VPs as coprocessors
+running separate firmware.
+
+Here we deprecate this mechanism before it is removed.
+
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+---
+ arch/mips/Kconfig | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 3c64aaa18be2..99d36a5bbf66 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2300,7 +2300,7 @@ config MIPSR2_TO_R6_EMULATOR
+ 	  final kernel image.
+ 
+ config MIPS_VPE_LOADER
+-	bool "VPE loader support."
++	bool "VPE loader support (DEPRECATED)"
+ 	depends on SYS_SUPPORTS_MULTITHREADING && MODULES
+ 	select CPU_MIPSR2_IRQ_VI
+ 	select CPU_MIPSR2_IRQ_EI
+@@ -2309,6 +2309,9 @@ config MIPS_VPE_LOADER
+ 	  Includes a loader for loading an elf relocatable object
+ 	  onto another VPE and running it.
+ 
++	  Unless you have a specific need, you should use CONFIG_MIPS_REMOTEPROC
++          instead of this.
++
+ config MIPS_VPE_LOADER_CMP
+ 	bool
+ 	default "y"
+-- 
+2.7.4
+
